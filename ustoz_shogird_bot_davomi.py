@@ -10,9 +10,13 @@ from aiogram.types import PreCheckoutQuery
 
 TOKEN = '7922523853:AAHFpvV14jrdyvDnI7IPZ-jx-FLwpbh_OAo' 
 CLICK_TOKEN = '398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065' 
+ADMIN_ID = 6387861882
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 CHANNEL_IDS = ['@test_i_kanal']
+
+users = []
+
 
 def buttons():
     kb = [
@@ -120,9 +124,20 @@ def ha_yoq_buttons():
 async def cmd_start(message: types.Message):
     if not await check_member(message.from_user.id):
         return await message.answer(text='Botimizdan foydalanish uchun quyidagi kanallarga obuna bo\'ling', reply_markup=buttons())
-    await message.answer(text='Siz botimizdan foydalanishingiz mumkin')
 
-
+    if message.from_user.id not in [user['user_id'] for user in users]:
+        user_info = {
+            'user_id': message.from_user.id,
+            'first_name': message.from_user.first_name,
+            'username': message.from_user.username
+        }
+        users.append(user_info)
+    
+    # Adminni xabardor qilish
+    if message.from_user.id == ADMIN_ID:
+        user_names = "\n".join([f"{user['first_name']} (@{user['username']})" for user in users])
+        await bot.send_message(ADMIN_ID, f"Botga kirgan foydalanuvchilar:\n{user_names}")
+    
     await message.reply(f"Assalom alaykum {message.from_user.first_name} \nUstozShogird kanalining rasmiy botiga xush kelibsiz!\n\n/help yordam buyrugi orqali nimalarga qodir ekanligimni bilib oling!", reply_markup=buttonlar())
     
 
