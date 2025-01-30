@@ -29,7 +29,6 @@ def buttons():
 async def check_member(user_id):
     for channel_id in CHANNEL_IDS:
         member = await bot.get_chat_member(channel_id, user_id)
-        
         if member.status not in ['creator', 'member', 'administrator']:
             print(member, channel_id, user_id)
             return False
@@ -543,6 +542,7 @@ async def get_maqsad(message: Message, state: FSMContext):
 
 @dp.callback_query()
 async def check_user(callback: types.CallbackQuery):
+    print(callback.data, 111111, callback.data == 'check_member_status', await check_member(callback.message.from_user.id), 3333)
     if callback.data == 'check_member_status':
         if not await check_member(callback.message.from_user.id):
             return await callback.answer(text='Siz shartlarni to\'liq bajarmadingiz')
